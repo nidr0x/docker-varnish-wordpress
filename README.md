@@ -1,7 +1,7 @@
 Docker with Varnish optimized for WordPress
 ===========
 
-Docker Varnish image with VCL optimized to use with WordPress. It uses Alpine Linux 3.8 as base.
+Docker Varnish image with VCL optimized to use with WordPress. It uses Alpine Linux 3.11 as base and Varnish 6.3.1.
 
 ### Varnish environment variables
 You can use the following variables to configure Varnish:
