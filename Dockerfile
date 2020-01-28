@@ -1,4 +1,4 @@
-FROM alpine:3.8
+FROM alpine:3.11
 LABEL Maintainer="Carlos R <nidr0x@gmail.com>" \
           Description="Varnish container in Alpine Linux"
 
@@ -9,7 +9,7 @@ ENV VARNISH_BACKEND_PORT "80"
 ADD varnish.vcl /etc/varnish/varnish.vcl
 
 RUN set -xe \ 
-    && apk add --no-cache varnish
+    && apk add --no-cache varnish=6.3.1-r1
 
 EXPOSE 6081 
 
