@@ -8,7 +8,7 @@ You can use the following variables to configure Varnish:
 
 ```
 	VARNISH_BACKEND_PORT 80
-	VARNISH_BACKEND_IP 172.17.42.1
+	VARNISH_BACKEND_HOST 172.17.42.1
 	VARNISH_PORT 80
 ```
 
