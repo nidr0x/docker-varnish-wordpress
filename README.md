@@ -1,37 +1,47 @@
-Docker with Varnish optimized for WordPress
+Docker With Varnish Optimized For WordPress
 ===========
 
-Docker Varnish image with VCL optimized to use with WordPress. It uses Alpine Linux 3.11 as base and Varnish 6.3.1.
+Docker Varnish image with a WordPress-oriented VCL. The container renders the backend values into the VCL at startup and runs `varnishd` in the foreground, which makes it friendlier to container platforms and CI.
 
-### Varnish environment variables
-You can use the following variables to configure Varnish:
+### Environment variables
 
-```
-	VARNISH_BACKEND_PORT 80
-	VARNISH_BACKEND_HOST 172.17.42.1
-	VARNISH_PORT 80
-```
+The image supports these runtime variables:
 
-If you want to customize more in depth, you should edit varnish.vcl with the values that you want.
-
-### Downloading image from Docker Hub 
-You can download the pre-built image from Docker Hub with the following command:
-
-```
-	$ docker pull nidr0x/varnish-wordpress
+```text
+VARNISH_STORAGE=256m
+VARNISH_BACKEND_HOST=172.17.42.1
+VARNISH_BACKEND_PORT=80
+VARNISH_PORT=6081
 ```
 
-### Building
-If you want to build the Docker image by yourself, you can do this by running the following command:
+If you need deeper cache policy changes, edit `varnish.vcl`.
 
-```
-	$ cd docker-varnish-wordpress
-	$ docker build -t varnish-wordpress .
+### Download
+
+```bash
+docker pull nidr0x/varnish-wordpress
 ```
 
-### Starting container
-Go ahead, babieca! 
+### Build
 
+```bash
+docker build -t varnish-wordpress .
 ```
-	$ docker run -i -d -p 80 -e VARNISH_BACKEND_IP 172.17.42.1 nidr0x/varnish-wordpress
+
+### Run
+
+```bash
+docker run --rm -p 6081:6081 \
+  -e VARNISH_BACKEND_HOST=172.17.42.1 \
+  -e VARNISH_BACKEND_PORT=80 \
+  varnish-wordpress
 ```
+
+### CI checks
+
+GitHub Actions runs these checks on pushes and pull requests:
+
+- `shellcheck` for `start.sh`
+- `hadolint` for `Dockerfile`
+- `docker build`
+- VCL compilation inside the built image with `varnishd -C`

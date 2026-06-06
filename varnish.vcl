@@ -46,7 +46,7 @@ if (req.http.Cache-Control ~ "no-cache") {
 }
 
 if (req.method == "PURGE") {
-    if (!client.ip ~ purge || !std.ip(req.http.X-Actual-IP, "1.2.3.4") ~ purge) {
+    if (!(client.ip ~ purge || std.ip(req.http.X-Actual-IP, "1.2.3.4") ~ purge)) {
         return(synth(405,"Not allowed."));
         }
     return (purge);
@@ -54,7 +54,7 @@ if (req.method == "PURGE") {
 
 if (req.method == "BAN") {
         # Same ACL check as above:
-        if (!client.ip ~ purge || !std.ip(req.http.X-Actual-IP, "1.2.3.4") ~ purge) {
+        if (!(client.ip ~ purge || std.ip(req.http.X-Actual-IP, "1.2.3.4") ~ purge)) {
                         return(synth(403, "Not allowed."));
         }
         ban("req.http.host == " + req.http.host +
@@ -164,18 +164,6 @@ if (req.http.X-Forwarded-Proto) {
     }
 }
 
-
-# HIT FUNCTION
-# ##########################################################
-sub vcl_hit {
-  return (deliver);
-}
-
-# MISS FUNCTION
-# ##########################################################
-sub vcl_miss {
-  return (fetch);
-}
 
 # FETCH FUNCTION
 # ##########################################################

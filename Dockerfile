@@ -1,17 +1,19 @@
-FROM alpine:3.11
-LABEL Maintainer="Carlos R <nidr0x@gmail.com>" \
-          Description="Varnish container in Alpine Linux"
+FROM alpine:3.23
 
-ENV VARNISH_STORAGE "256m"
-ENV VARNISH_BACKEND_HOST "172.17.42.1"
-ENV VARNISH_BACKEND_PORT "80"
+LABEL maintainer="Carlos R <nidr0x@gmail.com>" \
+      org.opencontainers.image.title="docker-varnish-wordpress" \
+      org.opencontainers.image.description="Varnish container for WordPress deployments"
 
-ADD varnish.vcl /etc/varnish/varnish.vcl
+ENV VARNISH_STORAGE="256m" \
+    VARNISH_BACKEND_HOST="172.17.42.1" \
+    VARNISH_BACKEND_PORT="80" \
+    VARNISH_PORT="6081"
 
-RUN set -xe \ 
-    && apk add --no-cache varnish=6.3.1-r1
+RUN apk add --no-cache varnish
 
-EXPOSE 6081 
+COPY varnish.vcl /etc/varnish/default.vcl.template
+COPY start.sh /start.sh
 
-ADD start.sh /start.sh
+EXPOSE 6081
+
 CMD ["/start.sh"]
