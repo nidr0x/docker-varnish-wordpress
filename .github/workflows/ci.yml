@@ -1,0 +1,46 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v6
+
+      - name: Install shellcheck
+        run: sudo apt-get update && sudo apt-get install --yes shellcheck
+
+      - name: Lint shell entrypoint
+        run: shellcheck start.sh
+
+      - name: Lint Dockerfile
+        run: docker run --rm -i hadolint/hadolint:v2.14.0 < Dockerfile
+
+  build-and-validate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v6
+
+      - name: Build image
+        run: docker build --tag varnish-wordpress:ci .
+
+      - name: Validate VCL
+        run: |
+          docker run --rm --entrypoint /bin/sh varnish-wordpress:ci -ceu '
+            cp /etc/varnish/default.vcl.template /tmp/default.vcl
+            sed -i "s|\${VARNISH_BACKEND_HOST}|127.0.0.1|g" /tmp/default.vcl
+            sed -i "s|\${VARNISH_BACKEND_PORT}|8080|g" /tmp/default.vcl
+            varnishd -C -f /tmp/default.vcl >/dev/null
+          '
