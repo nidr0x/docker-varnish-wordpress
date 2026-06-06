@@ -24,7 +24,7 @@ jobs:
         run: shellcheck start.sh
 
       - name: Lint Dockerfile
-        run: docker run --rm -i hadolint/hadolint:v2.14.0 --ignore DL3018 - < Dockerfile
+        run: docker run --rm -i hadolint/hadolint:v2.14.0 hadolint --ignore DL3018 - < Dockerfile
 
   build-and-validate:
     runs-on: ubuntu-latest
