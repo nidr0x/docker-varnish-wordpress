@@ -1,4 +1,4 @@
-FROM alpine:3.23
+FROM alpine:3.24
 
 LABEL maintainer="Carlos R <nidr0x@gmail.com>" \
       org.opencontainers.image.title="docker-varnish-wordpress" \
